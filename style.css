@@ -1,0 +1,9 @@
+#game div {
+  /* background-image: url(rose.jpg); */
+  border: 1px solid black;
+  width: 290px;
+  height: 70px;
+  margin: 20px;
+  display: inline-block;
+  text-indent: -9999px;
+}
