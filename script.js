@@ -1,16 +1,18 @@
 const gameContainer = document.getElementById("game");
+let scoreCard = document.querySelector("#score");
+let winner = document.querySelector(".winner");
+let reset = document.querySelector("#reset");
+let hScore = document.querySelector("#hScore");
+let start = document.querySelector('#start');
+let mainDiv = document.querySelector('#mainDiv');
 
-var prevData;
-var memory = "";
-var test = "";
-var temp = "";
-var boxColor = "";
-var prevBoxColor = "";
-var score = 0;
-var getImg = 0;
-var match = 1000;
-clickCount = 0;
-scoreCount = 0;
+var count = 0;
+var dataZero = "";
+var dataOne = "";
+var prevDiv;
+var latestScore = 0;
+var finalScore = 0;
+var match = 50;
 
 const COLORS = [
   "red",
@@ -18,20 +20,14 @@ const COLORS = [
   "green",
   "orange",
   "purple",
-  "magenta",
-  "black",
-  "grey",
+  "pink",
   "red",
   "blue",
   "green",
   "orange",
   "purple",
-  "magenta",
-  "black",
-  "grey"
-  
+  "pink"
 ];
-
 
 // here is a helper function to shuffle an array
 // it returns the same array with values shuffled
@@ -56,23 +52,19 @@ function shuffle(array) {
   return array;
 }
 
-
-
 let shuffledColors = shuffle(COLORS);
 
 // this function loops over the array of colors
 // it creates a new div and gives it a class with the value of the color
 // it also adds an event listener for a click for each card
 function createDivsForColors(colorArray) {
-  for (let color of colorArray) {
+  for (let i=0; i < colorArray.length ; i++) {
     // create a new div
     const newDiv = document.createElement("div");
 
     // give it a class attribute for the value we are looping over
-    newDiv.classList.add(color);
-    newDiv.id = getImg;
-    newDiv.innerText = getImg;
-    getImg++; 
+    newDiv.classList.add(colorArray[i]);
+    newDiv.id = i;
 
     // call a function handleCardClick when a div is clicked on
     newDiv.addEventListener("click", handleCardClick);
@@ -82,70 +74,81 @@ function createDivsForColors(colorArray) {
   }
 }
 
-
 // TODO: Implement this function!
 function handleCardClick(event) {
-  event.preventDefault();
-  scoreCount++;
-  // you can use event.target to see which element was clicked
-  console.log("you just clicked", event.target.classList.value);
-  clickCount++;
-  boxColor = event.target.classList.value
-  event.target.style.backgroundColor = boxColor;
-  
-  if (boxColor === prevBoxColor && match != event.target.innerText)
-  {
-    score++;
-    console.log(score);
-    event.target.style.backgroundColor = boxColor;
-    prevData.style.backgroundColor = boxColor;
-    if(score == 8)
+    // you can use event.target to see which element was clicked
+    if (count == 0 && match != event.target.id){
+      console.log("you just clicked", event.target.classList.value);
+      event.target.style.backgroundColor = event.target.classList.value;
+      dataZero= event.target.classList.value;
+      prevDiv = event.target;
+      count = 1;
+      console.log(count);
+      latestScore++;
+      scoreCard.textContent = latestScore;
+    }
+    else if(count == 1 && match != event.target.id)
     {
-      var win = document.createElement('h2');
-      win.textContent = "YOU ARE THE WINNER!!" + "  SCORE =" + scoreCount;
-      document.body.appendChild(win);
+      count = 2;
+      console.log("you just clicked", event.target.classList.value);
+      event.target.style.backgroundColor = event.target.classList.value;
+      dataOne= event.target.classList.value;
+      setTimeout(function(){
+        if(dataOne == dataZero)
+        {
+          count = 0;
+          latestScore++;
+          scoreCard.textContent = latestScore;
+          finalScore++;
+          if (finalScore == 6)
+          {
+            winner.textContent = "Winner!! Your score is: " + latestScore ;
+            if (localStorage.getItem('highscore') !== null)
+            {
+              if( localStorage.getItem('highscore') > latestScore )
+              {
+                hScore.textContent = latestScore;
+                localStorage.setItem('highscore', latestScore);
+              }
+            }
+            else
+            {
+                hScore.textContent = latestScore;
+                localStorage.setItem('highscore', latestScore);
+                
+            }
+          }
+        }
+        else
+        {
+          event.target.style.backgroundColor = "";
+          prevDiv.style.backgroundColor = "";
+          count = 0;
+          latestScore++;
+          scoreCard.textContent = latestScore;
+        }
+        match =50;
 
-      var newGame = document.createElement('button');
-      newGame.innerText = "New Game";
-      newGame.addEventListener ('click', function(){
-        location.reload();
-      });
-      document.body.appendChild(newGame);
-    }
-    clickCount = 0;
+      },1000)
+    
       
-  }
-  else
-  {
-    match = parseInt(event.target.innerText);
-    prevBoxColor = event.target.style.backgroundColor;
-    
-    //console.log(clickCount);
-    if (clickCount ==1)
-    {
-      prevData = event.target;
     }
-    else
-    {
-      setTimeout(bgCheck, 1000);
-        
-      
-      function bgCheck()
-      {
-        event.target.style.backgroundColor = "";
-        prevData.style.backgroundColor = "";
-        prevData = event.target;
-      }
-      clickCount = 0;
-      console.log("clickCount =", clickCount)
-    }
-    
-    console.log(prevData);
-    
-  }  
+    match = event.target.id;
 }
 
+start.addEventListener('click', function(e){
+e.preventDefault();
+mainDiv.style.display = "";
+e.target.remove();
+});
+
+
+hScore.textContent = localStorage.getItem('highscore') ;
+
+reset.addEventListener('click', function(e){
+  e.preventDefault();
+  window.location.reload();
+});
 
 // when the DOM loads
 createDivsForColors(shuffledColors);
-
