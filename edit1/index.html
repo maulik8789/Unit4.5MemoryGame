@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Memory Game!</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body style=" background-color: gray;">
+    <button id = 'start' style="width: 100%; margin-top: 200px; height: 60px;">START THE MEMORY GAME</button>
+    <div id = 'mainDiv' style="display: none;" >
+      <h1 style="text-align: center; background-color: gray;">Memory Game!
+        <span style= "float: right;"><button id = "reset">RESET</button></span>
+      </h1>
+    
+      <div id="game" style=" background-color: gray;">
+        <h2 style="text-align: right;">Score: 
+          <span style= "float: left;" >Highest Score:</span><span id = "hScore" style = "float: left;"></span>
+          <span id = "score" style="float: right;">0</span>        
+        </h2>
+      </div>
+      <h1 class="winner" style="text-align: center;"></h1>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
